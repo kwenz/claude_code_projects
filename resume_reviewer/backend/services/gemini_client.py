@@ -3,18 +3,17 @@ import os
 import re
 from typing import List
 
-import google.generativeai as genai
 from dotenv import load_dotenv
+from google import genai
 
 from models.schemas import Section, AnalyzeResponse, EnhanceResponse
 
 load_dotenv()
 
 _api_key = os.environ.get("GEMINI_API_KEY")
-if _api_key:
-    genai.configure(api_key=_api_key)
+_client = genai.Client(api_key=_api_key) if _api_key else None
 
-MODEL = "gemini-2.0-flash"
+MODEL = "gemini-2.5-flash"
 
 
 def _sections_to_text(sections: List[Section]) -> str:
@@ -32,7 +31,7 @@ def _extract_json(text: str) -> dict:
 
 
 def analyze_resume(sections: List[Section]) -> AnalyzeResponse:
-    if not _api_key:
+    if not _client:
         raise RuntimeError(
             "GEMINI_API_KEY environment variable is not set. "
             "Add it to backend/.env to use the Gemini provider."
@@ -74,14 +73,13 @@ Rules:
 RESUME:
 {resume_text}"""
 
-    model = genai.GenerativeModel(MODEL)
-    response = model.generate_content(prompt)
+    response = _client.models.generate_content(model=MODEL, contents=prompt)
     data = _extract_json(response.text)
     return AnalyzeResponse(**data)
 
 
 def enhance_resume(sections: List[Section]) -> EnhanceResponse:
-    if not _api_key:
+    if not _client:
         raise RuntimeError(
             "GEMINI_API_KEY environment variable is not set. "
             "Add it to backend/.env to use the Gemini provider."
@@ -108,7 +106,6 @@ Return ONLY a JSON object (no prose, no markdown fences):
 RESUME:
 {resume_text}"""
 
-    model = genai.GenerativeModel(MODEL)
-    response = model.generate_content(prompt)
+    response = _client.models.generate_content(model=MODEL, contents=prompt)
     data = _extract_json(response.text)
     return EnhanceResponse(**data)
