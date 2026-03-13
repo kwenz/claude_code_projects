@@ -1,0 +1,19 @@
+# Copy this file to .env and add your actual API keys
+# Choose your LLM provider (options: huggingface, gemini, openai)
+LLM_PROVIDER=huggingface
+
+# FREE OPTIONS (choose one):
+# 1. Hugging Face (free tier, get token at https://huggingface.co/settings/tokens)
+HUGGINGFACE_API_KEY=your_huggingface_token_here
+
+# 2. Google Gemini (free tier, get key at https://aistudio.google.com/)
+# GEMINI_API_KEY=your_gemini_api_key_here
+
+# PAID OPTION:
+# 3. OpenAI (paid, get key at https://platform.openai.com/api-keys)
+# OPENAI_API_KEY=your_openai_api_key_here
+
+# Optional: Override default settings
+# DATABASE_PATH=custom_papers.db
+# SERVER_HOST=0.0.0.0
+# SERVER_PORT=8502
